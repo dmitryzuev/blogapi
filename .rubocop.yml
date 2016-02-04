@@ -1,0 +1,17 @@
+Rails:
+  Enabled: true
+AllCops:
+  TargetRubyVersion: 2.2
+  Include:
+    - 'app/**/*'
+    - 'lib/**/*'
+  Exclude:
+    - 'config/**/*'
+    - 'bin/**/*'
+    - 'log/**/*'
+    - 'app/views/**/*'
+    - 'spec/*_helper.rb'
+    - '**/*.css'
+    - '**/*.js'
+    - '**/*.scss'
+    - '**/*.coffee'
