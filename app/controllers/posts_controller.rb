@@ -5,22 +5,52 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       if post.save
-        format.json { render json: post, status: :created }
+        response = {
+          data: {
+            type: 'posts',
+            id: post.id,
+            attributes: {
+              title: post.title,
+              username: post.username,
+              ip: post.ip
+            }
+          }
+        }
+        format.json { render json: response, status: :created }
       else
-        format.json { render json: post.errors, status: :unprocessable_entity }
+        errors = []
+        post.errors.messages.each do |key, error|
+          errors << { status: 422, code: key, title: error[0] }
+        end
+
+        format.json { render json: { errors: errors }, status: :unprocessable_entity }
       end
     end
   end
 
   def rate
     post = Post.find(params[:id])
-    rating = Rating.new(rating_params['attributes'].merge({'post' => post}))
+    rating = Rating.new(rating_params['attributes'].merge('post' => post))
 
     respond_to do |format|
       if rating.save
-        format.json { render json: rating, status: :created }
+        response = {
+          data: {
+            type: 'ratings',
+            attributes: {
+              post_id: post.id,
+              average: post.ratings.average(:score).to_f.round(2)
+            }
+          }
+        }
+
+        format.json { render json: response, status: :created }
       else
-        format.json { render json: rating.errors, status: :unprocessable_entity }
+        errors = []
+        rating.errors.messages.each do |key, error|
+          errors << { status: 422, code: key, title: error[0] }
+        end
+        format.json { render json: { errors: errors }, status: :unprocessable_entity }
       end
     end
   end
