@@ -1,8 +1,21 @@
+# PostsController API
 class PostsController < ApplicationController
   def create
-    response = {test: 'atata'}
+    @post = Post.new(post_params['attributes'])
+
     respond_to do |format|
-      format.jsonapi { render json: response, status: :created }
+      if @post.save
+        format.json { render json: @post, status: :created }
+      else
+        format.json { render json: @post.errors, status: :unprocessable_entity }
+      end
     end
+  end
+
+  private
+
+  def post_params
+    params.require(:data)
+          .permit(:type, attributes: [:title, :content, :username, :ip])
   end
 end
