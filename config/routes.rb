@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   post 'posts' => 'posts#create'
-  post 'posts/:post_id/rate' => 'posts#rate',
+  post 'posts/:id/rate' => 'posts#rate',
        as: :posts_rate,
        constraints: { id: /\d+/ }
   get  'posts' => 'posts#top'
