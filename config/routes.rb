@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   post 'posts/:id/rate' => 'posts#rate',
        as: :posts_rate,
        constraints: { id: /\d+/ }
-  get  'posts' => 'posts#top'
+  get  'posts/top/:amount' => 'posts#top', as: :posts_top, constraints: { amount: /\d+/ }
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

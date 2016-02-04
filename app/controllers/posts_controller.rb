@@ -55,6 +55,32 @@ class PostsController < ApplicationController
     end
   end
 
+  def top
+    amount = params[:amount].to_i
+    averages = Rating.group(:post_id)
+                     .average(:score)
+                     .to_a
+                     .sort { |a, b| b[1] <=> a[1] }[0..amount]
+
+    response = {data: []}
+    averages[0..(amount-1)].each do |avg|
+      post = Post.find(avg[0])
+      response[:data] << {
+        type: 'posts',
+        id: avg[0],
+        attributes: {
+          title: post.title,
+          content: post.content,
+          average: post.ratings.average(:score).to_f.round(2)
+        }
+      }
+    end
+
+    respond_to do |format|
+      format.json { render json: response, status: :ok }
+    end
+  end
+
   private
 
   def post_params
