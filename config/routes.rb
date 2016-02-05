@@ -1,11 +1,13 @@
 Rails.application.routes.draw do
-  post 'posts' => 'posts#create'
-  post 'posts/:id/rate' => 'posts#rate',
-       as: :posts_rate,
-       constraints: { id: /\d+/ }
-  get  'posts/top/:amount' => 'posts#top', as: :posts_top, constraints: { amount: /\d+/ }
+  scope defaults: { format: 'json' } do
+    post 'posts' => 'posts#create'
+    post 'posts/:id/rate' => 'posts#rate',
+         as: :posts_rate,
+         constraints: { id: /\d+/ }
+    get  'posts/top/:amount' => 'posts#top', as: :posts_top, constraints: { amount: /\d+/ }
 
-  get 'ips' => 'ips#index'
+    get 'ips' => 'ips#index'
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
