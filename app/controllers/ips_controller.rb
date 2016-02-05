@@ -1,15 +1,17 @@
 class IpsController < ApplicationController
   def index
-    sql = "
-      SELECT *
-      FROM (
-        SELECT posts.ip,
-               COUNT(DISTINCT posts.user_id) as authors
-        FROM posts
-        GROUP BY posts.ip
-      ) d
-      WHERE d.authors > 1
-      ORDER BY d.authors DESC;"
+    # sql = "
+    #   SELECT *
+    #   FROM (
+    #     SELECT posts.ip,
+    #            COUNT(DISTINCT posts.user_id) as authors
+    #     FROM posts
+    #     GROUP BY posts.ip
+    #   ) d
+    #   WHERE d.authors > 1
+    #   ORDER BY d.authors DESC;"
+
+    sql = "SELECT posts.ip, COUNT(user_id) FROM posts GROUP BY posts.ip HAVING COUNT(posts.user_id) > 1"
 
     response = { data: [] }
 
