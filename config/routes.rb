@@ -5,6 +5,8 @@ Rails.application.routes.draw do
        constraints: { id: /\d+/ }
   get  'posts/top/:amount' => 'posts#top', as: :posts_top, constraints: { amount: /\d+/ }
 
+  get 'ips' => 'ips#index'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
