@@ -9,7 +9,7 @@ class IpsController < ApplicationController
                                GROUP BY ip
                                HAVING COUNT(username) > 1
                              )').each do |row|
-      if x = response[:data].index { |x| x[:id] }
+      if x = response[:data].index { |x| x[:id] == row.ip }
         response[:data][x][:attributes][:authors] << row.username
       else
         response[:data] << {
