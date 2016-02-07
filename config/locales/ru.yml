@@ -21,3 +21,24 @@
 
 ru:
   hello: "Привет, мир!"
+  activerecord:
+    errors:
+      models:
+        rating:
+          attributes:
+            post:
+              blank: 'Не существует такого поста'
+            score:
+              blank: "'score' не может быть пустым"
+              less_than: 'Рейтинг не может быть больше 5'
+              greater_than: 'Рейтинг не может быть ниже 1'
+        post:
+          attributes:
+            title:
+              blank: "'title' не может быть пустым"
+            content:
+              blank: "'content' не может быть пустым"
+            user:
+              blank: "'user' не может быть пустым"
+            ip:
+              blank: "'ip' не может быть пустым"
