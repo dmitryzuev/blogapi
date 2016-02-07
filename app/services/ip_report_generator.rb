@@ -16,7 +16,7 @@ class IpReportGenerator
   # Make ip: [usernames] hash
   def ips
     data = {}
-    ip_query.each do |row|
+    ip_materialized_query.each do |row|
       if data[row[0]]
         data[row[0]] << row[1]
       else
@@ -36,5 +36,9 @@ class IpReportGenerator
                          HAVING COUNT(username) > 1
                       )')
               .pluck(:ip, :username)
+  end
+
+  def ip_materialized_query
+    IpReport.pluck(:ip, :username)
   end
 end
