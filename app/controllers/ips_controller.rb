@@ -1,7 +1,6 @@
+# IpsController
 class IpsController < ApplicationController
   def index
-    response = { data: [] }
-
     ips = {}
     IpUsername.select(:ip, :username)
               .where('ip IN (
@@ -19,7 +18,7 @@ class IpsController < ApplicationController
     end
 
     respond_to do |format|
-      format.json { render json: ips, status: :ok }
+      format.json { render json: { data: ips.to_a.map { |m| { type: 'ips', id: m[0], attributes: { authors: m[1] } } } }, status: :ok }
     end
   end
 end
