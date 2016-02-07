@@ -10,6 +10,7 @@ class PostCreator
     post = Post.new(@params)
 
     if post.save
+      # Don't forget to cache this ip
       IpUsernameCacher.new.call(@params[:ip], @params[:username])
       response[:response] = {
         data: {
