@@ -28,42 +28,69 @@ end
   ips << FFaker::Internet.ip_v4_address
 end
 
-# Generate posts
-uri = URI('http://localhost:3000/posts')
-200000.times do
-  post = {
-    data: {
-      type: "posts",
-      attributes: {
-        title: FFaker::Lorem.phrase,
-        content: FFaker::Lorem.paragraph,
-        username: usernames.sample,
-        ip: ips.sample
+if Rails.env == 'development'
+  # Generate posts
+  uri = URI('http://localhost:3000/posts')
+  200000.times do
+    post = {
+      data: {
+        type: "posts",
+        attributes: {
+          title: FFaker::Lorem.phrase,
+          content: FFaker::Lorem.paragraph,
+          username: usernames.sample,
+          ip: ips.sample
+        }
       }
     }
-  }
 
-  req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' => 'application/vnd.api+json'})
-  req.body = JSON.generate(post)
-  res = Net::HTTP.start(uri.hostname, uri.port) do |http|
-    http.request(req)
+    req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' => 'application/vnd.api+json'})
+    req.body = JSON.generate(post)
+    res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+      http.request(req)
+    end
   end
-end
 
-# Generate ratings
-1000.times do
-  rating = {
-    data: {
-      type: 'ratings',
-      attributes: {
-        score: rand(1..5)
+  # Generate ratings
+  1000.times do
+    rating = {
+      data: {
+        type: 'ratings',
+        attributes: {
+          score: rand(1..5)
+        }
       }
     }
-  }
-  uri = URI("http://localhost:3000/posts/#{rand(100000..100500)}/rate")
-  req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' => 'application/vnd.api+json'})
-  req.body = JSON.generate(rating)
-  res = Net::HTTP.start(uri.hostname, uri.port) do |http|
-    http.request(req)
+    uri = URI("http://localhost:3000/posts/#{rand(100000..100500)}/rate")
+    req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' => 'application/vnd.api+json'})
+    req.body = JSON.generate(rating)
+    res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+      http.request(req)
+    end
+  end
+
+# For test purposes we don't need http requests
+elsif Rails.env == 'test'
+
+  # Seed with posts
+  2000.times do
+    post_data = {
+      title: FFaker::Lorem.phrase,
+      content: FFaker::Lorem.paragraph,
+      username: usernames.sample,
+      ip: ips.sample
+    }
+
+    PostCreator.new(post_data).call
+  end
+
+  # Seed with ratings
+  100.times do
+    rating_data = {
+      post_id: rand(100000..100500),
+      score: rand(1..5)
+    }
+
+    PostRater.new(rating_data).call
   end
 end
