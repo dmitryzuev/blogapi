@@ -17,7 +17,6 @@ require 'net/http'
 usernames = []
 ips = []
 posts = []
-ratings = []
 
 # Generate usernames
 100.times do
@@ -46,6 +45,24 @@ uri = URI('http://localhost:3000/posts')
 
   req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' => 'application/vnd.api+json'})
   req.body = JSON.generate(post)
+  res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+    http.request(req)
+  end
+end
+
+# Generate ratings
+1000.times do
+  rating = {
+    data: {
+      type: 'ratings',
+      attributes: {
+        score: rand(1..5)
+      }
+    }
+  }
+  uri = URI("http://localhost:3000/posts/#{rand(100000..100500)}/rate")
+  req = Net::HTTP::Post.new(uri, initheader = {'Content-Type' => 'application/vnd.api+json'})
+  req.body = JSON.generate(rating)
   res = Net::HTTP.start(uri.hostname, uri.port) do |http|
     http.request(req)
   end
