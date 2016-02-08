@@ -87,8 +87,26 @@ RSpec.describe PostsController, type: :controller do
       expect(response.body).to eq(valid_response.to_json)
     end
 
-    it 'responds with 422 status after wrong data'
-    it 'responds with errors after failure'
+    it 'responds with 422 status after wrong data' do
+      post_request[:attributes][:title] = nil
+      post :create, format: :json, data: post_request
+      expect(response).to have_http_status(422)
+    end
+
+    it 'responds with errors after failure' do
+      post_request[:attributes][:title] = nil
+      post :create, format: :json, data: post_request
+
+      valid_response = {
+        errors: [ {
+          status: 422,
+          code: 'title',
+          title: "'title' не может быть пустым"
+        } ]
+      }
+
+      expect(response.body).to eq(valid_response.to_json)
+    end
   end
 
   describe 'POST #rate' do
@@ -127,6 +145,19 @@ RSpec.describe PostsController, type: :controller do
       expect(response.body).to eq(valid_response.to_json)
     end
 
-    it 'responds with errors after failure'
+    it 'responds with errors after failure' do
+      rating_request[:attributes][:score] = 10
+      post :rate, id: rating.post_id, format: :json, data: rating_request
+
+      valid_response = {
+        errors: [ {
+          status: 422,
+          code: 'score',
+          title: "Рейтинг не может быть больше 5"
+        } ]
+      }
+
+      expect(response.body).to eq(valid_response.to_json)
+    end
   end
 end
