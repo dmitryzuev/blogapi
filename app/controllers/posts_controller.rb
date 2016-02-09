@@ -29,12 +29,12 @@ class PostsController < ApplicationController
   private
 
   def post_params
-    params.require(:data)
+    params.fetch(:data, {})
           .permit(:type, attributes: [:title, :content, :username, :ip])
   end
 
   def rating_params
-    params.require(:data)
+    params.fetch(:data, {})
           .permit(:type, attributes: [:score])
   end
 end
